@@ -23,7 +23,7 @@ st.markdown("""
 
     /* 3. GLOBAL TEXT VISIBILITY */
     [data-testid="stMain"] *, .stMarkdown p, .stText, .stCaption, label p, span, h4 {
-        color: #1a1a1a !important; 
+       /*color: #1a1a1a !important;*/ 
     }
 
     /* 4. INPUT BOXES */
@@ -177,7 +177,7 @@ st.markdown(f"""
     </div>
     """, unsafe_allow_html=True)
 
-st.markdown(f"""<div style="background-color: #1b4d3e; color: #ffffff; padding: 8px 15px; border-radius: 4px; border-left: 8px solid #efb519; margin-bottom: 15px; font-weight: bold;">📍 VIEWING: {selected_category.upper()}</div>""", unsafe_allow_html=True)
+st.markdown(f"""<div style="background-color: #fffff; color: #000000; padding: 8px 15px; border-radius: 4px; border-left: 8px solid #efb519; margin-bottom: 15px; font-weight: bold;">📍 VIEWING: {selected_category.upper()}</div>""", unsafe_allow_html=True)
 
 # --- NEW ENTRY FORM ---
 if st.session_state.show_form:
