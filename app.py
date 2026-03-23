@@ -167,7 +167,7 @@ with st.sidebar:
     st.markdown("### **🌐 QUICK LINKS**")
     st.link_button("📘 FACEBOOK PAGE", "https://www.facebook.com/cdoho.baguio", use_container_width=True)
     st.link_button("🏛️ OFFICIAL WEBSITE", "https://caro.doh.gov.ph/", use_container_width=True)
-    st.link_button("📧 WEBMAIL", "https://mail.doh.gov.ph", use_container_width=True)         
+    st.link_button("📋 AKBOT", "https://benguetdohmatters.my.canva.site/akbotbenguet2026", use_container_width=True)
 
 # --- MAIN HEADER ---
 st.markdown(f"""
