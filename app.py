@@ -46,7 +46,7 @@ st.markdown("""
     
     /* DEFAULT: FOREST GREEN (For Add New and Save) */
     div.stButton > button, div[data-testid="stFormSubmitButton"] button {
-        background-color: #1b4d3e !important; 
+        background-color: #efb519 !important; 
         color: #ffffff !important;
         border: 2px solid #efb519 !important;
         font-weight: bold !important;
@@ -59,9 +59,9 @@ st.markdown("""
     }
 
     .st-key-cancel_btn > button {
-        background-color: #ff8c00 !important; 
+        background-color: #efb519 !important; 
         color: #ffffff !important;
-        border: 2px solid #ffffff !important;
+        border: 2px solid #e67e00 !important;
         box-shadow: 0px 2px 5px rgba(0,0,0,0.2) !important;
     }
     
