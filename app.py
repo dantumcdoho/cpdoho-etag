@@ -9,7 +9,8 @@ import string
 # Page Configuration
 st.set_page_config(page_title="CPDOHO eTAG", layout="wide", page_icon="🏥")
 
-# --- THEMED CSS: FORCED GOLD & SMOOTH ANIMATION ---
+# --- THEMED CSS: FORCED COLORS & SMOOTH SCROLL ---
+# --- THEMED CSS: FORCED COLORS & SMOOTH SCROLL ---
 st.markdown("""
     <style>
     /* 1. FORCE SMOOTH SCROLLING */
@@ -25,7 +26,7 @@ st.markdown("""
         color: #1a1a1a !important; 
     }
 
-    /* 4. INPUT BOXES: WHITE BG + BLACK TEXT */
+    /* 4. INPUT BOXES */
     input, textarea, [data-baseweb="select"] span, [data-baseweb="select"] div {
         color: #000000 !important; 
         -webkit-text-fill-color: #000000 !important;
@@ -41,22 +42,43 @@ st.markdown("""
     [data-testid="stSidebar"] { background-color: #1b4d3e !important; border-right: 5px solid #efb519 !important; }
     [data-testid="stSidebar"] * { color: #ffffff !important; }
     
-    /* 6. BUTTONS: FORCED DOH GOLD (#efb519) */
-    div[data-testid="stForm"] button[kind="primaryFormSubmit"] {
-        background-color: #efb519 !important; 
-        color: #1b4d3e !important;
-        border: 2px solid #1b4d3e !important;
+    /* 6. BUTTON STYLING */
+    
+    /* DEFAULT: FOREST GREEN (For Add New and Save) */
+    div.stButton > button, div[data-testid="stFormSubmitButton"] button {
+        background-color: #1b4d3e !important; 
+        color: #ffffff !important;
+        border: 2px solid #efb519 !important;
         font-weight: bold !important;
     }
 
+    /* THE FIX: TARGET CANCEL BUTTON SPECIFICALLY BY KEY */
+    /* Streamlit wraps buttons with keys in a div with class 'st-key-[keyname]' */
+    div[data-testid="stBaseButton-secondary"] {
+        /* This targets standard buttons that aren't primary */
+    }
+
+    .st-key-cancel_btn > button {
+        background-color: #ff8c00 !important; 
+        color: #ffffff !important;
+        border: 2px solid #ffffff !important;
+        box-shadow: 0px 2px 5px rgba(0,0,0,0.2) !important;
+    }
+    
+    .st-key-cancel_btn > button:hover {
+        background-color: #e67e00 !important;
+        color: #ffffff !important;
+    }
+
+    /* TARGET: OPEN LINKS -> GOLD */
     .stLinkButton > a {
         background-color: #efb519 !important; 
-        color: #0038a8 !important;
+        color: #1b4d3e !important;
         font-weight: 800 !important;
         border: 1px solid #1b4d3e !important;
     }
 
-    /* 7. FLOATING SCROLL BUTTON: DOH GOLD */
+    /* 7. FLOATING SCROLL BUTTON (Gold) */
     .scroll-btn {
         position: fixed;
         bottom: 30px;
@@ -75,12 +97,6 @@ st.markdown("""
         font-size: 30px;
         font-weight: bold;
         box-shadow: 0px 4px 15px rgba(0,0,0,0.4);
-        transition: transform 0.2s ease;
-    }
-    .scroll-btn:hover {
-        transform: scale(1.1);
-        background-color: #1b4d3e !important;
-        color: #efb519 !important;
     }
 
     .footer { text-align: center; padding: 20px; color: #1b4d3e !important; border-top: 1px solid #ddd; }
@@ -93,8 +109,10 @@ st.markdown("""
 # --- SECURE GOOGLE SHEETS LOGIC ---
 def get_gspread_client():
     try:
-        # Replaces from_json_keyfile_name with st.secrets
-        creds_dict = st.secrets["gcp_service_account"]
+        creds_dict = dict(st.secrets["gcp_service_account"])
+        if "private_key" in creds_dict:
+            creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
+        
         scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         return gspread.authorize(creds)
@@ -135,6 +153,7 @@ with st.sidebar:
     
     if "show_form" not in st.session_state: st.session_state.show_form = False
     
+    # This button will be GREEN
     if st.button("➕ ADD NEW RESOURCE", use_container_width=True):
         st.session_state.show_form = True
 
@@ -177,17 +196,20 @@ if st.session_state.show_form:
         
         t_desc = st.text_input("Short Description")
         
+        # This button will be GREEN
         if st.form_submit_button("SAVE TO DATABASE"):
             if t_title and t_url:
                 client = get_gspread_client()
-                t_sheet = client.open_by_key("1kJCOUc-bObq7Ogp9xk-6u48HE3MbkogdcQ5oC3G5mW8").worksheet("stremlit")
-                t_sheet.append_row([gen_id, t_title, t_desc, t_url, t_cat])
-                st.success("Saved!")
-                st.session_state.show_form = False
-                st.cache_data.clear()
-                st.rerun()
+                if client:
+                    t_sheet = client.open_by_key("1kJCOUc-bObq7Ogp9xk-6u48HE3MbkogdcQ5oC3G5mW8").worksheet("stremlit")
+                    t_sheet.append_row([gen_id, t_title, t_desc, t_url, t_cat])
+                    st.success("Saved Successfully!")
+                    st.session_state.show_form = False
+                    st.cache_data.clear()
+                    st.rerun()
 
-    if st.button("✖ CANCEL"):
+    # This button will be ORANGE
+    if st.button("✖ CANCEL", key="cancel_btn", use_container_width=True):
         st.session_state.show_form = False
         st.rerun()
     st.markdown("---")
@@ -211,9 +233,10 @@ if not df.empty:
                 <p style="color: #777; font-size: 0.75rem; font-style: italic;">ID: {row.get('RECID', 'N/A')} | {row['CATEGORY']}</p>
             """, unsafe_allow_html=True)
         with col_btn:
+            # These links will be GOLD
             st.link_button("OPEN", row['LINK'], use_container_width=True)
         st.markdown("<div style='border-bottom:1px solid #eee; margin: 5px 0;'></div>", unsafe_allow_html=True)
 
-# --- DYNAMIC FOOTER ---
+# --- FOOTER ---
 current_year = datetime.now().year
 st.markdown(f"""<div class="footer">© {current_year} CPDOHO - Baguio/Benguet MiniSystem ver1</div>""", unsafe_allow_html=True)
