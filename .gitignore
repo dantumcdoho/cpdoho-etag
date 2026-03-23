@@ -1,0 +1,20 @@
+# Google Cloud Credentials (CRITICAL)
+creds.json
+
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Streamlit secrets and config
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS generated files
+.DS_Store
+Thumbs.db
